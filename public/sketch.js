@@ -1,6 +1,84 @@
 var socket;
 
+
+
+
+//Game varaibles
+var gameHeight;
+var gameWidth;
+var floorPos_y;
+var scrollPos;
+var realPos;
+var limitJump;
+var placeOnFloor;
+
+//Character physics
+var character = {
+    x: 32,
+    y: 0
+};  
+
+var isLeft;
+var isRight;
+var isJumping;
+var isFalling;
+var isOnPlatform;
+
+//Game features
+var score;
+var isWon = false;
+var isLost = false;
+var lives;
+
+//Game objects
+var enemies;
+var enemiesPre;
+
+var platforms;
+var platformsPre;
+
+var chests;
+var chestClosed;
+
+var canyon;
+
+//IMAGES
+let idle;
+let jumpleft;
+let jumpright;
+let fallleft;
+let fallright;
+
+let packageRun;
+let runIndex;
+
+let backgroundImg;
+let greenground;
+let borderImg;
+let terrain;
+let platformImg;
+
+let packageSaw;
+let sawIndex;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function setup(){
+
+
+
+
   socket = io.connect(window.location.origin);
   createCanvas(windowWidth, windowHeight);
   noCursor();
@@ -23,6 +101,23 @@ function setup(){
       }
     }
   );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
 
 }
 
