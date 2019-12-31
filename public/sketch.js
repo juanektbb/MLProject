@@ -106,6 +106,32 @@ function setup(){
 
 
 
+  gameWidth = 1024;
+  gameHeight = 400;
+  createCanvas(gameWidth, gameHeight);
+
+  floorPos_y = height - 57;
+  placeOnFloor = floorPos_y - 32;
+
+  //GAME STYLES
+  backgroundImg = loadImage("./assets/background/Purple.png");
+  bgtimesx = Math.floor(width / 64) + 1;
+  bgtimesy = Math.floor(height / 64) + 1;
+
+  greenground = loadImage('./assets/greenground.png');
+  ggtimesx = Math.floor(width / 32) + 1;
+
+  borderImg = loadImage('./assets/border.png');
+  bitimesx = Math.floor(width / 48) + 1;
+
+  terrain = loadImage("./assets/terrain.png");
+
+  //MAIN CHARACTER
+  idle = loadImage('./assets/idle.png');
+  jumpleft = loadImage('./assets/jump.png');
+  jumpright = loadImage('./assets/jump.png');
+  fallleft = loadImage('./assets/fall.png');
+  fallright = loadImage('./assets/fall.png');
 
 
 
@@ -117,7 +143,6 @@ function setup(){
 
 
 
-  
 
 }
 
