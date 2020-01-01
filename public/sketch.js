@@ -133,18 +133,31 @@ function setup(){
   fallleft = loadImage('./assets/fall.png');
   fallright = loadImage('./assets/fall.png');
 
+  //Run left 
+  packageRun = [];
+  for(var i = 0; i < 12; i++)
+      packageRun.push(loadImage('./assets/run-right/run'+ i +'.png'));
+  runIndex = 0;
 
+  //CHESTS
+  chestClosed = loadImage("./assets/chestclosed.png");
+  platformImg = loadImage("./assets/platform.png");
 
-
-
-
-
-
-
-
-
+  //ENEMIES
+  packageSaw = [];
+  for(var i = 0; i < 8; i++)
+      packageSaw.push(loadImage("./assets/saw/saw" + i + ".png"));
+  sawIndex = 0;
+  
+  //Calling main function 
+  lives = 3;
+  startGame();
 
 }
+
+
+
+
 
 var r = 100;
 var g = 100;
@@ -154,6 +167,24 @@ function draw() {
   background(r, g, b);
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function mouseMoved() {
   socket.emit('inputData', { x: mouseX, y:mouseY });
