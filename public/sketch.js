@@ -158,13 +158,78 @@ function setup(){
 
 
 
+/* ----------------------------------------------------------- */
 
-var r = 100;
-var g = 100;
-var b = 100;
-
+/****************************
+        DRAW FUNCTION
+****************************/
 function draw() {
-  background(r, g, b);
+  
+    //User is on platform
+    isOnPlatform = false;
+    
+    //CREATE BACKGROUND WITH IMAGES
+    for(var i = 0; i < bgtimesx; i++){
+        for(var j = 0; j < bgtimesy; j++){
+            image(backgroundImg, i * 64, j * 64);
+        }
+    }
+
+    //DRAW ENEMIES - CANVAS POSITION
+    push();
+    translate(scrollPos, 0);
+        for(var i = 0; i < enemies.length; i++){
+            enemies[i].display();
+            enemies[i].move();
+            enemies[i].checkCharCollision();
+        }
+    pop();
+
+    //DRAW GREEN GROUND - CANVAS POSITION
+    for(var i = 0; i < ggtimesx; i++){
+        image(greenground, i * 32, floorPos_y);
+    }
+
+    //DRAW BORDER BOTTOM - CANVAS POSITION
+    for(var i = 0; i < bitimesx; i++){
+        image(borderImg, i * 48, floorPos_y + 48);
+    }
+
+  //DRAW CANYONS - CANVAS POSITION
+    push();
+    translate(scrollPos, 0);
+        drawCanyon(canyon);
+    pop();
+        
+  //DRAW CHESTS - CANVAS POSITION
+    push();
+    translate(scrollPos, 0); 
+        drawChests(chests);
+    pop();
+    
+    //DRAW PLATFORMS - CANVAS POSITION
+    push();
+    translate(scrollPos, 0);
+        for(var i = 0; i < platforms.length; i++){
+            platforms[i].display();
+            platforms[i].checkCharOn();
+        }
+    pop();
+
+    //MAIN CHARACTER
+    drawGameChar();
+
+
+    /**********************
+        CHECK FUNCTIONS
+    **********************/
+    checkCanyon(canyon);
+
+    checkChests(chests);
+    
+    checkPlayerWon(chests);
+    
+    checkPlayerDie();
 
 }
 
