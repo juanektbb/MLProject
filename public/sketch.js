@@ -313,12 +313,32 @@ function draw() {
   realPos = character.x - scrollPos;
 
 
+  /*********************************
+            SCREEN INFORMATION
+    *********************************/
+    textSize(20);
+    fill(0);
+    stroke(1);
+    text("Treasures: "+score+" / "+chests.length, 12.5,25);
+    text("Lives: ", 12.5,50);
+    
+    //Drawing hearts in the screen
+    for(var l = 0; l < lives; l++){
+        noStroke();     
+        fill(255,0,0);
+        ellipse(75 + 18*l,40,8,8);
+        ellipse(83 + 18*l,40,8,8);
+        triangle(71 + 18*l,40,
+            87 + 18*l,40,
+            79 + 18*l,51);  
+    }
+
 
 
 }
 
 
-
+/* ----------------------------------------------------------- */
 
 
 
