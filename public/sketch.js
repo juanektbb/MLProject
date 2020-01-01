@@ -231,6 +231,90 @@ function draw() {
     
     checkPlayerDie();
 
+
+    /**************************
+            GAME STATUS
+    **************************/  
+    //GAME OVER
+    if(isLost == true){
+        fill(176, 0, 0);
+        noStroke();
+        rect(200,200,624,176);
+        
+        textSize(50);
+        fill(255);
+        strokeWeight(3);
+        
+        text("GAME OVER - You lost \n (Press space to continue)", gameWidth/2, gameHeight/2);
+        textAlign(CENTER,CENTER);
+        strokeWeight(1);
+        return;
+    }
+    
+    //PLAYER WON
+    if(isWon == true){
+        fill(119, 242, 147);
+        noStroke();
+        rect(200,200,624,176);
+        
+        textSize(50);
+        fill(0);
+        strokeWeight(3);
+        stroke(0);
+        
+        text("YOU WON \n (Press space to continue)", gameWidth/2,gameHeight/2);
+        textAlign(CENTER,CENTER);
+        strokeWeight(1);
+        return; 
+    }
+
+
+    /*************************
+            GAME LOGIC
+    *************************/  
+  //Logic to make the game character move left or the background scroll
+  if(isLeft){
+        if(character.x > width * 0.2){
+            character.x = character.x - 3;
+        }else{
+            scrollPos += 3;
+        }
+  }
+
+    //Logic to make the game character move right or the background scroll
+  if(isRight){
+        if(character.x < width * 0.8){
+            character.x = character.x + 3;
+        }else{
+            scrollPos -= 3;
+        }
+  }
+    
+    //Gravity
+    if(character.y < placeOnFloor && isOnPlatform == false && isJumping == false){
+        character.y += 3;
+    }else{
+        isFalling = false;
+  }
+
+    //Jump - Power up
+  if(isJumping == true && isFalling == false && character.y > limitJump){
+        character.y -= 3;
+        isFalling = false;
+  }
+    
+    //Limit of jumping - Character falls
+    if(character.y < limitJump){
+        isFalling = true;
+        isJumping = false;
+    }
+
+  //Update real position for collision detection
+  realPos = character.x - scrollPos;
+
+
+
+
 }
 
 
