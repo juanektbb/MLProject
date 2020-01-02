@@ -479,6 +479,36 @@ function checkCanyon(t_canyon){
 }
 
 
+/*******************************************
+    CHESTS RENDERING AND CHECK FUNCTIONS
+*******************************************/
+function drawChests(t_chest){
+    for(var b = 0; b < chests.length; b++){
+        if(t_chest[b].isFound == false){  
+            image(chestClosed, t_chest[b].x, t_chest[b].y);
+        }
+    }
+}
+
+//CHECK IF POSITION IS CORRECT FOR PICKING
+function checkChests(t_chest){
+    for(var b = 0; b < chests.length; b++){
+
+        //IF IT IS NOT FOUND, TRIGGER TO GET
+        if(t_chest[b].isFound == false){ 
+
+            //IF CHARACTER IS IN CORRECT POSITION FOR PICKING UP
+            if(realPos + 25 > t_chest[b].x && realPos + 25 < t_chest[b].x + 39 &&
+               character.y + 40 > t_chest[b].y && character.y + 40 < t_chest[b].y + 61){
+                t_chest[b].isFound = true;
+                score += 1;
+            }
+
+        }
+
+    }
+}
+
 
 
 
