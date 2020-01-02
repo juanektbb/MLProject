@@ -374,8 +374,61 @@ function keyReleased(){
     isRight = false;
 }
 
+/* ----------------------------------------------------------- */
 
+/**************************
+    CHARACTER FUNCTIONS
+**************************/
+function drawGameChar(){
+  
+    //CHARACTER LEFT
+    if(isLeft == true && isJumping == false && isRight == false){
+        characterRunsLeft(character.x, character.y);
+        
+    //CHARACTER RIGHT    
+    }else if(isRight == true && isJumping == false && isLeft == false){
+        characterRunsRight(character.x, character.y);
+        
+    //CHARACTER JUMPING  
+    }else if(isJumping == true && isRight == false && isLeft == false || isFalling == true && isOnPlatform == false){
+        image(fallleft, character.x, character.y, 32, 32);            
+        
+    //CHARACTER JUMPING LEFT    
+    }else if(isLeft == true && isJumping == true){
+        image(jumpleft, character.x, character.y, 32, 32);
+              
+    //CHARACTER JUMPING RIGHT
+    }else if(isRight == true && isJumping == true){
+        image(jumpright, character.x, character.y, 32, 32);
+        
+    //CHARACTER FRONT    
+    }else{
+        image(idle, character.x, character.y, 32, 32);
+    }
 
+}
+
+//FUNCTION ANIMATION RUNNING LEFT
+function characterRunsLeft(x, y){
+    image(packageRun[runIndex], x, y, 32, 32);
+
+    if(runIndex == packageRun.length - 1){
+        runIndex = 0;
+    }else{
+        runIndex++;
+    }
+}
+
+//FUNCTION ANIMATION RUNNING RIGHT
+function characterRunsRight(x, y){
+    image(packageRun[runIndex], x, y, 32, 32);
+
+    if(runIndex == packageRun.length - 1){
+        runIndex = 0;
+    }else{
+        runIndex++;
+    }
+}
 
 
 
