@@ -431,6 +431,53 @@ function characterRunsRight(x, y){
 }
 
 
+/****************************
+        SAW FUNCTIONS
+****************************/
+//ANIMATE SAW MOVEMENT
+function animateSaw(x, y){
+    image(packageSaw[sawIndex], x, y);
+
+    if(sawIndex == packageSaw.length - 1){
+        sawIndex = 0;
+    }else{
+        sawIndex++;
+    }
+}
+
+
+/*******************************************
+    CANYON RENDERING AND CHECK FUNCTIONS
+*******************************************/
+function drawCanyon(t_canyon){
+    for(var cy = 0; cy < canyon.length; cy++){
+        var canyonsx = Math.floor(t_canyon[cy].width / 22); //How many textures
+
+        //Repeat canyon texture
+        for(var i = 0; i < canyonsx; i++){
+            for(var j = 0; j < 3; j++){
+                image(terrain, t_canyon[cy].x + (i * 22), floorPos_y + 1 + (j * 30));
+            }
+        }
+    }
+}
+
+//CHECK IF POSITION IS CORRECT FOR FALLING
+function checkCanyon(t_canyon){
+    for(var cy = 0; cy < canyon.length; cy++){
+        //MAKE CHARACTER FALL
+        if(realPos + 15 > t_canyon[cy].x && realPos + 15 < t_canyon[cy].x + t_canyon[cy].width && character.y + 70 >= placeOnFloor + 69){
+            character.y += 5;
+        }
+    
+        //NO GOING INTO THE GROUND WHEN FALLING IN THE CANYON
+        if(realPos > t_canyon[cy].x - 10 && realPos + 48 < t_canyon[cy].x + t_canyon[cy].width + 10 && character.y + 70 > placeOnFloor + 69){
+            isLeft = false; 
+            isRight = false;
+        }
+    }
+}
+
 
 
 
