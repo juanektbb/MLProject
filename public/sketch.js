@@ -340,6 +340,56 @@ function draw() {
 
 /* ----------------------------------------------------------- */
 
+/****************************
+    KEY CONTROL FUNCTIONS
+****************************/
+function keyPressed(){
+    //Left arrow
+  if(keyCode == 37)
+    isLeft = true;
+  
+    //Right arrow
+  if(keyCode == 39)
+    isRight = true;
+  
+    //Jumping
+    if((keyCode === 32 && character.y == placeOnFloor) ||
+        (keyCode === 32 && isOnPlatform == true)){
+        
+        //IsJumping is true and limit jump is 92
+        if(isFalling == false){
+            isJumping = true;
+            limitJump = character.y - 92;
+        }
+    }
+}
+
+function keyReleased(){
+    //Left arrow
+  if(keyCode == 37)
+    isLeft = false;
+  
+    //Right arrow
+  if(keyCode == 39)
+    isRight = false;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
