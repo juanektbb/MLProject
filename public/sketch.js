@@ -510,7 +510,62 @@ function checkChests(t_chest){
 }
 
 
+/* ----------------------------------------------------------- */
 
+/***********************************************
+    MAIN FUNCTIONALITY OF THE SETUP FUNCTION
+***********************************************/
+function startGame(){
+    
+    score = 0;
+    character.x = 320;
+  character.y = placeOnFloor; 
+    
+  //Control the background scrolling
+  scrollPos = 0;
+
+  //Real position of the character within the game. (Used for collision detection)
+  realPos = character.x - scrollPos;
+
+  //Control the movement of the character
+  isLeft = false;
+  isRight = false;
+  isJumping = false;
+  isFalling = false;
+
+    //CHESTS DATA
+    chests = [{x: 50, y: 273, size: 50, isFound: false},
+              {x: 920, y: 69, size: 50, isFound: false},
+              {x: 15, y: 63, size: 50, isFound: false},
+    ]; 
+
+    //CANYONS DATA
+    canyon = [
+        {x: 220, width: 66},
+        {x: 600, width: 320}
+    ];
+
+    //ENEMIES DATA
+    enemies = [];
+    enemiesPre = [
+        {epx: 10, epy: placeOnFloor + 14, epx1: 10, epx2: 180, epspeed: 2},
+        {epx: 0, epy: placeOnFloor - 211, epx1: 0, epx2: 488, epspeed: 3},
+        {epx: 244, epy: placeOnFloor - 211, epx1: 0, epx2: 488, epspeed: 2}
+    ];
+
+    //PLATFORMS DATA
+    isOnPlatform = false;
+    platforms = [];
+    platformsPre = [
+        {ppx: 10, ppy: floorPos_y - 50, ppwidth: 96, ppheight: 15},
+        {ppx: 600, ppy: floorPos_y - 50, ppwidth: 96, ppheight: 15},
+        {ppx: 750, ppy: floorPos_y - 101, ppwidth: 96, ppheight: 15},
+        {ppx: 624, ppy: floorPos_y - 152, ppwidth: 48, ppheight: 15},
+        {ppx: 776, ppy: floorPos_y - 203, ppwidth: 48, ppheight: 15},
+        {ppx: 904, ppy: floorPos_y - 254, ppwidth: 48, ppheight: 15},
+        {ppx: 0, ppy: floorPos_y - 203, ppwidth: 528, ppheight: 15},
+        {ppx: 0, ppy: floorPos_y - 260, ppwidth: 48, ppheight: 15},
+    ];
 
 
 
