@@ -1,8 +1,3 @@
-var socket;
-
-
-
-
 //Game varaibles
 var gameHeight;
 var gameWidth;
@@ -61,19 +56,15 @@ let platformImg;
 let packageSaw;
 let sawIndex;
 
+/* ----------------------------------------------------------- */
+
+//Control OSC
+var socket;
 
 
-
-
-
-
-
-
-
-
-
-
-
+/*********************
+    SETUP FUNCTION
+*********************/
 function setup(){
 
 
@@ -106,57 +97,54 @@ function setup(){
 
 
 
-  gameWidth = 1024;
-  gameHeight = 400;
-  createCanvas(gameWidth, gameHeight);
+    gameWidth = 1024;
+    gameHeight = 400;
+    createCanvas(gameWidth, gameHeight);
 
-  floorPos_y = height - 57;
-  placeOnFloor = floorPos_y - 32;
+    floorPos_y = height - 57;
+    placeOnFloor = floorPos_y - 32;
 
-  //GAME STYLES
-  backgroundImg = loadImage("./assets/background/Purple.png");
-  bgtimesx = Math.floor(width / 64) + 1;
-  bgtimesy = Math.floor(height / 64) + 1;
+    //GAME STYLES
+    backgroundImg = loadImage("./assets/background/Purple.png");
+    bgtimesx = Math.floor(width / 64) + 1;
+    bgtimesy = Math.floor(height / 64) + 1;
 
-  greenground = loadImage('./assets/greenground.png');
-  ggtimesx = Math.floor(width / 32) + 1;
+    greenground = loadImage('./assets/greenground.png');
+    ggtimesx = Math.floor(width / 32) + 1;
 
-  borderImg = loadImage('./assets/border.png');
-  bitimesx = Math.floor(width / 48) + 1;
+    borderImg = loadImage('./assets/border.png');
+    bitimesx = Math.floor(width / 48) + 1;
 
-  terrain = loadImage("./assets/terrain.png");
+    terrain = loadImage("./assets/terrain.png");
 
-  //MAIN CHARACTER
-  idle = loadImage('./assets/idle.png');
-  jumpleft = loadImage('./assets/jump.png');
-  jumpright = loadImage('./assets/jump.png');
-  fallleft = loadImage('./assets/fall.png');
-  fallright = loadImage('./assets/fall.png');
+    //MAIN CHARACTER
+    idle = loadImage('./assets/idle.png');
+    jumpleft = loadImage('./assets/jump.png');
+    jumpright = loadImage('./assets/jump.png');
+    fallleft = loadImage('./assets/fall.png');
+    fallright = loadImage('./assets/fall.png');
 
-  //Run left 
-  packageRun = [];
-  for(var i = 0; i < 12; i++)
-      packageRun.push(loadImage('./assets/run-right/run'+ i +'.png'));
-  runIndex = 0;
+    //Run left 
+    packageRun = [];
+    for(var i = 0; i < 12; i++)
+        packageRun.push(loadImage('./assets/run-right/run'+ i +'.png'));
+    runIndex = 0;
 
-  //CHESTS
-  chestClosed = loadImage("./assets/chestclosed.png");
-  platformImg = loadImage("./assets/platform.png");
+    //CHESTS
+    chestClosed = loadImage("./assets/chestclosed.png");
+    platformImg = loadImage("./assets/platform.png");
 
-  //ENEMIES
-  packageSaw = [];
-  for(var i = 0; i < 8; i++)
-      packageSaw.push(loadImage("./assets/saw/saw" + i + ".png"));
-  sawIndex = 0;
-  
-  //Calling main function 
-  lives = 3;
-  startGame();
+    //ENEMIES
+    packageSaw = [];
+    for(var i = 0; i < 8; i++)
+        packageSaw.push(loadImage("./assets/saw/saw" + i + ".png"));
+    sawIndex = 0;
+
+    //Calling main function 
+    lives = 3;
+    startGame();
 
 }
-
-
-
 
 /* ----------------------------------------------------------- */
 
@@ -167,7 +155,7 @@ function draw() {
   
     //User is on platform
     isOnPlatform = false;
-    
+
     //CREATE BACKGROUND WITH IMAGES
     for(var i = 0; i < bgtimesx; i++){
         for(var j = 0; j < bgtimesy; j++){
@@ -195,18 +183,18 @@ function draw() {
         image(borderImg, i * 48, floorPos_y + 48);
     }
 
-  //DRAW CANYONS - CANVAS POSITION
+    //DRAW CANYONS - CANVAS POSITION
     push();
     translate(scrollPos, 0);
         drawCanyon(canyon);
     pop();
         
-  //DRAW CHESTS - CANVAS POSITION
+    //DRAW CHESTS - CANVAS POSITION
     push();
     translate(scrollPos, 0); 
         drawChests(chests);
     pop();
-    
+
     //DRAW PLATFORMS - CANVAS POSITION
     push();
     translate(scrollPos, 0);
