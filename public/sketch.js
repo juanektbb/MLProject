@@ -568,6 +568,39 @@ function startGame(){
     ];
 
 
+    /*****************************************
+            ADVANCE ELEMENTS APPENDING
+    *****************************************/
+
+    /******* APPEND ENEMIES *******/
+    for(var i = 0; i < enemiesPre.length; i++){
+        //PRE BUILD ENEMY OBJECT TO APPEND TO ENEMIES ARRAY
+        enemies.push({
+            x_pos:  enemiesPre[i].epx,
+            y_pos:  enemiesPre[i].epy,
+            x1:     enemiesPre[i].epx1,
+            x2:     enemiesPre[i].epx2,
+            speed:  enemiesPre[i].epspeed,
+            
+            display: function(){
+                animateSaw(this.x_pos, this.y_pos);
+            },
+            
+            move: function(){
+                if(this.x_pos > this.x2 || this.x_pos < this.x1){
+                    this.speed =  this.speed * -1;
+                }
+                this.x_pos = this.x_pos + this.speed;
+            },
+            
+            checkCharCollision: function(){
+                if (this.x_pos < realPos + 32 && this.x_pos + 38 > realPos &&
+                    this.y_pos < character.y + 32 && this.y_pos + 38 > character.y){
+                    playerDied();
+                }
+            }
+        });
+    }
 
 
 
