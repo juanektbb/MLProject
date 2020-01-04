@@ -602,7 +602,31 @@ function startGame(){
         });
     }
 
+   /******* APPEND PLATFORMS *******/
+    for(var i = 0; i < platformsPre.length; i++){
+        //PRE BUILD PLATFORM OBJECT TO APPEND TO PLATFORMS ARRAY
+        platforms.push({
+            x_pos:  platformsPre[i].ppx,
+            y_pos:  platformsPre[i].ppy,
+            width:  platformsPre[i].ppwidth,
+            height: platformsPre[i].ppheight,
 
+            display: function(){
+                var platformtimes = Math.floor(this.width / 48); //How many textures
+                for(var i = 0; i < platformtimes; i++){
+                    image(platformImg, this.x_pos + (i * 48), this.y_pos - 2);
+                }
+            },
+            
+            checkCharOn: function(){   
+                if(realPos + 20 > this.x_pos && realPos + 10 < this.x_pos + this.width && character.y + 33 == this.y_pos){
+                    isOnPlatform = true;
+                }
+            }
+        });
+    }
+ 
+}
 
 
 
