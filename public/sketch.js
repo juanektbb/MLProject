@@ -629,6 +629,36 @@ function startGame(){
 }
 
 
+/*****************************
+    OTHER HELPER FUNCTIONS
+*****************************/
+//IF PLAYER HAS WON
+function checkPlayerWon(t_chest){
+    if(score == t_chest.length){
+        isWon = true;
+    }
+}
+
+//CHECK CHARACTER HAS FALLEN
+function checkPlayerDie(){
+    if(character.y > gameHeight + 120){
+        playerDied();
+    }
+}
+
+//PLAYER HAS DIES
+function playerDied(){
+    lives -= 1;
+
+    //Start game again or Game Over
+    if(lives >= 0){
+        startGame(); 
+    }else{
+        isLost = true;
+    }
+}
+
+
 
 
 
