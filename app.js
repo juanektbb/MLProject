@@ -13,6 +13,8 @@ var osc = require('osc-min');
 var dgram = require('dgram');
 var udp = dgram.createSocket('udp4');
 
+
+
 //PORTS AND URLS 
 var remoteIP = '127.0.0.1';
 var inputPort = 3333;
@@ -56,9 +58,24 @@ io.on('connection', function (socket){
     try {
       var oscmsg = osc.fromBuffer(msg);
 
+      //console.log(oscmsg)
+
+      if(oscmsg.address == "/one"){
+        console.log("1");
+      }
+
+      if(oscmsg.address == "/two"){
+        console.log("2");
+      }
+
       for (var n = 0; n < oscmsg.args.length; n++) {
         console.log(oscmsg.args[n].value);
       }
+
+
+
+
+      //console.log("------------------");
 
       socket.emit('outputData', oscmsg);
 
@@ -70,6 +87,9 @@ io.on('connection', function (socket){
   sock.bind(outputPort);
 
 });
+
+
+
 
 //SERVE WEBPAGE
 app.use(express.static(__dirname + '/public'));

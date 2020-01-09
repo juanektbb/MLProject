@@ -1,0 +1,138 @@
+<?xml version="1.0"?>
+<WekiInputHelperFileData>
+  <oscReceivePort>6447</oscReceivePort>
+  <oscSendPort>6449</oscSendPort>
+  <sendHostname>localhost</sendHostname>
+  <sendOscMessage>/wek/inputs</sendOscMessage>
+  <inputs>
+    <oscMessage>/wii/irb</oscMessage>
+    <numInputs>3</numInputs>
+    <groupName>Inputs</groupName>
+    <inputNames>
+      <string>irb_1</string>
+      <string>irb_2</string>
+      <string>irb_3</string>
+    </inputNames>
+  </inputs>
+  <outputs>
+    <outputs class="linked-list">
+      <wekiinputhelper.Modifiers.ExpressionInput>
+        <name>irx</name>
+        <expression class="expr.BinaryExpr">
+          <variablesUsed>
+            <string>irb_1</string>
+          </variablesUsed>
+          <rator>0</rator>
+          <rand0 class="expr.BinaryExpr">
+            <rator>2</rator>
+            <rand0 class="expr.BinaryExpr">
+              <rator>1</rator>
+              <rand0 class="expr.LiteralExpr">
+                <v>1.0</v>
+              </rand0>
+              <rand1 class="expr.Variable">
+                <name>irb_1</name>
+                <val>0.1484375</val>
+              </rand1>
+            </rand0>
+            <rand1 class="expr.LiteralExpr">
+              <v>448.0</v>
+            </rand1>
+          </rand0>
+          <rand1 class="expr.LiteralExpr">
+            <v>142.0</v>
+          </rand1>
+        </expression>
+        <variables>
+          <expr.Variable reference="../../expression/rand0/rand0/rand1"/>
+        </variables>
+        <indexedVariables>
+          <wekiinputhelper.Modifiers.IndexedVar>
+            <originalVariable>irb_1</originalVariable>
+            <unindexedName>irb_1</unindexedName>
+            <delay>0</delay>
+          </wekiinputhelper.Modifiers.IndexedVar>
+        </indexedVariables>
+        <indexes>
+          <int>0</int>
+        </indexes>
+        <originalString>((1 - irb_1) * 448) + 142 </originalString>
+        <buffersForInputs>
+          <wekiinputhelper.Modifiers.CircularBuffer>
+            <length>1</length>
+          </wekiinputhelper.Modifiers.CircularBuffer>
+          <wekiinputhelper.Modifiers.CircularBuffer>
+            <length>1</length>
+          </wekiinputhelper.Modifiers.CircularBuffer>
+          <wekiinputhelper.Modifiers.CircularBuffer>
+            <length>1</length>
+          </wekiinputhelper.Modifiers.CircularBuffer>
+        </buffersForInputs>
+      </wekiinputhelper.Modifiers.ExpressionInput>
+      <wekiinputhelper.Modifiers.ExpressionInput>
+        <name>iry</name>
+        <expression class="expr.BinaryExpr">
+          <variablesUsed>
+            <string>irb_2</string>
+          </variablesUsed>
+          <rator>0</rator>
+          <rand0 class="expr.BinaryExpr">
+            <rator>2</rator>
+            <rand0 class="expr.Variable">
+              <name>irb_2</name>
+              <val>0.0</val>
+            </rand0>
+            <rand1 class="expr.LiteralExpr">
+              <v>388.0</v>
+            </rand1>
+          </rand0>
+          <rand1 class="expr.LiteralExpr">
+            <v>72.0</v>
+          </rand1>
+        </expression>
+        <variables>
+          <expr.Variable reference="../../expression/rand0/rand0"/>
+        </variables>
+        <indexedVariables>
+          <wekiinputhelper.Modifiers.IndexedVar>
+            <originalVariable>irb_2</originalVariable>
+            <unindexedName>irb_2</unindexedName>
+            <delay>0</delay>
+          </wekiinputhelper.Modifiers.IndexedVar>
+        </indexedVariables>
+        <indexes>
+          <int>1</int>
+        </indexes>
+        <originalString>(irb_2 * 388) + 72</originalString>
+        <buffersForInputs>
+          <wekiinputhelper.Modifiers.CircularBuffer>
+            <length>1</length>
+          </wekiinputhelper.Modifiers.CircularBuffer>
+          <wekiinputhelper.Modifiers.CircularBuffer>
+            <length>1</length>
+          </wekiinputhelper.Modifiers.CircularBuffer>
+          <wekiinputhelper.Modifiers.CircularBuffer>
+            <length>1</length>
+          </wekiinputhelper.Modifiers.CircularBuffer>
+        </buffersForInputs>
+      </wekiinputhelper.Modifiers.ExpressionInput>
+    </outputs>
+    <numOutputTypes>2</numOutputTypes>
+    <dimensionality>2</dimensionality>
+    <hasDependencies>false</hasDependencies>
+  </outputs>
+  <inputTriggerer class="wekiinputhelper.TriggerOnTimes">
+    <c>
+      <type>GREATER_THAN</type>
+      <howLong>REPEAT</howLong>
+      <index>2</index>
+      <val>0.5</val>
+      <appliesTo>INPUT</appliesTo>
+    </c>
+    <runningListener class="wekiinputhelper.InputTriggerer$1">
+      <outer-class class="wekiinputhelper.TriggerOnTimes" reference="../.."/>
+    </runningListener>
+    <numMs>10</numMs>
+  </inputTriggerer>
+  <isSendingOriginalInputs>false</isSendingOriginalInputs>
+</WekiInputHelperFileData>

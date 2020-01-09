@@ -1,4 +1,5 @@
 //Game varaibles
+var lovelycanvas;
 var gameHeight;
 var gameWidth;
 var floorPos_y;
@@ -6,6 +7,10 @@ var scrollPos;
 var realPos;
 var limitJump;
 var placeOnFloor;
+var lastDirection;
+
+var widthCanvasDom;
+
 
 //Character physics
 var character = {
@@ -38,14 +43,18 @@ var chestClosed;
 var canyon;
 
 //IMAGES
-let idle;
+let idleleft;
+let idleright;
 let jumpleft;
 let jumpright;
 let fallleft;
 let fallright;
 
-let packageRun;
-let runIndex;
+let packageRunLeft;
+let runIndexLeft;
+
+let packageRunRight;
+let runIndexRight;
 
 let backgroundImg;
 let greenground;
@@ -60,6 +69,27 @@ let sawIndex;
 
 //Control OSC
 var socket;
+
+var thisOSCData = 0;
+var allowFrames = 0;
+
+let box1;
+let box2;
+let box3;
+let box4;
+let box5;
+
+let osc1;
+let osc2;
+let osc3;
+let osc4;
+let osc5;
+
+
+
+var oscright = 0;
+var oscleft = 0;
+
 
 
 /*********************
@@ -88,21 +118,54 @@ function setup(){
       // b = map(data.args[2].value, 0, 1, 0, 255);
 
       for(var n = 0; n < data.args.length; n++){
-        println(n + ": " + data.args[n].value);
+        console.log(data.args[n].value);
+
+        if(allowFrames == 0){
+            thisOSCData = data.args[n].value;
+        }
+        
       }
+
+        if(data.address == "/one"){
+            console.log("One 1");
+            oscright = 1;
+        }
+
+
+        if(data.address == "/two"){
+            console.log("Two 2");
+            oscleft = 1;
+        }
+
+
     }
   );
 
 
 
+    osc1 = 1;
+    osc2 = 2;
+    osc3 = 3;
+    osc4 = 4;
+    osc5 = 5;
+    
 
+    box1 = document.getElementById("box-1");
+    box2 = document.getElementById("box-2");
+    box3 = document.getElementById("box-3");
+    box4 = document.getElementById("box-4");
+    box5 = document.getElementById("box-5");
 
-    gameWidth = 1024;
-    gameHeight = 400;
-    createCanvas(gameWidth, gameHeight);
+    widthCanvasDom = document.getElementById("ready-canvas").offsetWidth;
+
+    gameWidth = widthCanvasDom;
+    gameHeight = 450;
+    lovelycanvas = createCanvas(gameWidth, gameHeight);
+    lovelycanvas.parent('ready-canvas');
 
     floorPos_y = height - 57;
     placeOnFloor = floorPos_y - 32;
+    lastDirection = "right";
 
     //GAME STYLES
     backgroundImg = loadImage("./assets/background/Purple.png");
@@ -118,17 +181,24 @@ function setup(){
     terrain = loadImage("./assets/terrain.png");
 
     //MAIN CHARACTER
-    idle = loadImage('./assets/idle.png');
-    jumpleft = loadImage('./assets/jump.png');
-    jumpright = loadImage('./assets/jump.png');
-    fallleft = loadImage('./assets/fall.png');
-    fallright = loadImage('./assets/fall.png');
+    idleleft = loadImage('./assets/idleleft.png');
+    idleright = loadImage('./assets/idleright.png');
+    jumpleft = loadImage('./assets/jumpleft.png');
+    jumpright = loadImage('./assets/jumpright.png');
+    fallleft = loadImage('./assets/fallleft.png');
+    fallright = loadImage('./assets/fallright.png');
 
     //Run left 
-    packageRun = [];
+    packageRunLeft = [];
     for(var i = 0; i < 12; i++)
-        packageRun.push(loadImage('./assets/run-right/run'+ i +'.png'));
-    runIndex = 0;
+        packageRunLeft.push(loadImage('./assets/run-left/run'+ i +'.png'));
+    runIndexLeft = 0;
+
+    //Run right
+    packageRunRight = [];
+    for(var i = 0; i < 12; i++)
+        packageRunRight.push(loadImage('./assets/run-right/run'+ i +'.png'));
+    runIndexRight = 0;
 
     //CHESTS
     chestClosed = loadImage("./assets/chestclosed.png");
@@ -141,7 +211,7 @@ function setup(){
     sawIndex = 0;
 
     //Calling main function 
-    lives = 3;
+    lives = 30;
     startGame();
 
 }
@@ -260,36 +330,90 @@ function draw() {
     /*************************
             GAME LOGIC
     *************************/  
-  //Logic to make the game character move left or the background scroll
-  if(isLeft){
+
+
+    //Jumping
+    if((thisOSCData == osc2 && character.y == placeOnFloor) ||
+        (thisOSCData == osc2 && isOnPlatform == true)){
+        
+        //IsJumping is true and limit jump is 92
+        if(isFalling == false){
+            isJumping = true;
+            limitJump = character.y - 92;
+        }
+    }
+
+
+
+
+
+    //Jumping
+    if((thisOSCData == osc1 && character.y == placeOnFloor) ||
+        (thisOSCData == osc1 && isOnPlatform == true)){
+        
+        //IsJumping is true and limit jump is 92
+        if(isFalling == false){
+            isJumping = true;
+            limitJump = character.y - 92;
+        }
+    }
+
+
+
+    //Jumping
+    if((thisOSCData == osc3 && character.y == placeOnFloor) ||
+        (thisOSCData == osc3 && isOnPlatform == true)){
+
         if(character.x > width * 0.2){
             character.x = character.x - 3;
         }else{
             scrollPos += 3;
         }
-  }
+        
+        //IsJumping is true and limit jump is 92
+        if(isFalling == false){
+            isJumping = true;
+            limitJump = character.y - 92;
+        }
+    }
+
+
+
+
+
+
+
+    //Logic to make the game character move left or the background scroll
+    if(isLeft || thisOSCData == osc4){
+
+        if(character.x > width * 0.2){
+            character.x = character.x - 3;
+        }else{
+            scrollPos += 3;
+        }
+    }
 
     //Logic to make the game character move right or the background scroll
-  if(isRight){
+    if(isRight || thisOSCData == osc5){
         if(character.x < width * 0.8){
             character.x = character.x + 3;
         }else{
             scrollPos -= 3;
         }
-  }
-    
+    }
+
     //Gravity
     if(character.y < placeOnFloor && isOnPlatform == false && isJumping == false){
         character.y += 3;
     }else{
         isFalling = false;
-  }
+    }
 
     //Jump - Power up
-  if(isJumping == true && isFalling == false && character.y > limitJump){
+    if(isJumping == true && isFalling == false && character.y > limitJump){
         character.y -= 3;
         isFalling = false;
-  }
+    }
     
     //Limit of jumping - Character falls
     if(character.y < limitJump){
@@ -297,11 +421,59 @@ function draw() {
         isJumping = false;
     }
 
-  //Update real position for collision detection
-  realPos = character.x - scrollPos;
+    //Update real position for collision detection
+    realPos = character.x - scrollPos;
 
 
-  /*********************************
+
+    box1.style.backgroundColor = "#e6e6e6";
+    box2.style.backgroundColor = "#e6e6e6";
+    box3.style.backgroundColor = "#e6e6e6";
+    box4.style.backgroundColor = "#e6e6e6";
+    box5.style.backgroundColor = "#e6e6e6";
+
+
+    switch(thisOSCData){
+        case osc1:
+            box1.style.backgroundColor = "red";
+            break;
+        case osc2:
+            box2.style.backgroundColor = "red";
+            break;
+        case osc3:
+            box3.style.backgroundColor = "red";
+            break;
+        case osc4:
+            box4.style.backgroundColor = "red";
+            break;
+        case osc5:
+            box5.style.backgroundColor = "red";
+            break;
+    }
+
+
+
+
+
+    if(thisOSCData == 4){
+        lastDirection = "left";
+    }else if(thisOSCData == 5){
+        lastDirection = "right";
+    }
+
+
+
+    allowFrames++;
+    if(allowFrames == 2){
+        allowFrames = 0;
+        thisOSCData = 0;
+    }
+
+
+    
+
+
+    /*********************************
             SCREEN INFORMATION
     *********************************/
     textSize(20);
@@ -320,8 +492,6 @@ function draw() {
             87 + 18*l,40,
             79 + 18*l,51);  
     }
-
-
 
 }
 
@@ -354,12 +524,17 @@ function keyPressed(){
 
 function keyReleased(){
     //Left arrow
-  if(keyCode == 37)
-    isLeft = false;
+    if(keyCode == 37){
+        isLeft = false;
+        lastDirection = "left";
+    }
   
     //Right arrow
-  if(keyCode == 39)
-    isRight = false;
+    if(keyCode == 39){
+        isRight = false;
+        lastDirection = "right";
+    }
+    
 }
 
 /* ----------------------------------------------------------- */
@@ -370,51 +545,62 @@ function keyReleased(){
 function drawGameChar(){
   
     //CHARACTER LEFT
-    if(isLeft == true && isJumping == false && isRight == false){
+    if((isLeft == true && isJumping == false && isRight == false) || thisOSCData == osc4){
         characterRunsLeft(character.x, character.y);
         
     //CHARACTER RIGHT    
-    }else if(isRight == true && isJumping == false && isLeft == false){
+    }else if((isRight == true && isJumping == false && isLeft == false) || thisOSCData == osc5){
         characterRunsRight(character.x, character.y);
         
-    //CHARACTER JUMPING  
+    //CHARACTER FALLING  
     }else if(isJumping == true && isRight == false && isLeft == false || isFalling == true && isOnPlatform == false){
-        image(fallleft, character.x, character.y, 32, 32);            
+
+        if(lastDirection == "left"){
+            image(fallleft, character.x, character.y, 32, 32);  
+        }else{
+            image(fallright, character.x, character.y, 32, 32);
+        }          
         
     //CHARACTER JUMPING LEFT    
-    }else if(isLeft == true && isJumping == true){
+    }else if((isLeft == true && isJumping == true) || (thisOSCData == osc2 && isJumping == true)){
         image(jumpleft, character.x, character.y, 32, 32);
               
     //CHARACTER JUMPING RIGHT
-    }else if(isRight == true && isJumping == true){
+    }else if((isRight == true && isJumping == true) || (thisOSCData == osc2 && isJumping == true)){
         image(jumpright, character.x, character.y, 32, 32);
         
     //CHARACTER FRONT    
     }else{
-        image(idle, character.x, character.y, 32, 32);
+
+        if(lastDirection == "left"){
+            image(idleleft, character.x, character.y, 32, 32);
+        }else{
+            image(idleright, character.x, character.y, 32, 32);
+        }
+        
     }
 
 }
 
 //FUNCTION ANIMATION RUNNING LEFT
 function characterRunsLeft(x, y){
-    image(packageRun[runIndex], x, y, 32, 32);
+    image(packageRunLeft[runIndexLeft], x, y, 32, 32);
 
-    if(runIndex == packageRun.length - 1){
-        runIndex = 0;
+    if(runIndexLeft == packageRunLeft.length - 1){
+        runIndexLeft = 0;
     }else{
-        runIndex++;
+        runIndexLeft++;
     }
 }
 
 //FUNCTION ANIMATION RUNNING RIGHT
 function characterRunsRight(x, y){
-    image(packageRun[runIndex], x, y, 32, 32);
+    image(packageRunRight[runIndexRight], x, y, 32, 32);
 
-    if(runIndex == packageRun.length - 1){
-        runIndex = 0;
+    if(runIndexRight == packageRunRight.length - 1){
+        runIndexRight = 0;
     }else{
-        runIndex++;
+        runIndexRight++;
     }
 }
 
@@ -507,19 +693,19 @@ function startGame(){
     
     score = 0;
     character.x = 320;
-  character.y = placeOnFloor; 
-    
-  //Control the background scrolling
-  scrollPos = 0;
+    character.y = placeOnFloor; 
 
-  //Real position of the character within the game. (Used for collision detection)
-  realPos = character.x - scrollPos;
+    //Control the background scrolling
+    scrollPos = 0;
 
-  //Control the movement of the character
-  isLeft = false;
-  isRight = false;
-  isJumping = false;
-  isFalling = false;
+    //Real position of the character within the game. (Used for collision detection)
+    realPos = character.x - scrollPos;
+
+    //Control the movement of the character
+    isLeft = false;
+    isRight = false;
+    isJumping = false;
+    isFalling = false;
 
     //CHESTS DATA
     chests = [{x: 50, y: 273, size: 50, isFound: false},
@@ -665,9 +851,9 @@ function playerDied(){
 
 
 
-function mouseMoved() {
-  socket.emit('inputData', { x: mouseX, y:mouseY });
-}
+// function mouseMoved() {
+//   socket.emit('inputData', { x: mouseX, y:mouseY });
+// }
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
