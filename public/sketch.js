@@ -45,6 +45,8 @@ var chestClosed;
 var canyon;
 
 //IMAGES
+let keyImg;
+
 let idleleft;
 let idleright;
 let jumpleft;
@@ -71,15 +73,9 @@ let sawIndex;
 
 //Control OSC
 var socket;
-
 var thisOSCData = 0;
-var allowFrames = 0;
 
-let box1;
-let box2;
-let box3;
-let box4;
-let box5;
+
 
 let osc1;
 let osc2;
@@ -95,81 +91,80 @@ var oscleft = 0;
 //Dynamic Time Warping
 var dwtreceived;
 
-
 //Second part
 var modalwindow;
 
 var actualTresuare;
 
+//HTML ELEMENTS FOR OSC
+let box1;
+let box2;
+let box3;
+let box4;
+let box5;
 
 
+let MLOutputType;
 
 /*********************
     SETUP FUNCTION
 *********************/
 function setup(){
 
+    socket = io.connect(window.location.origin);
+    MLOutputType = "Classification";
+    //Change to 'DTW' for other functionality
 
-  socket = io.connect(window.location.origin);
-  createCanvas(windowWidth, windowHeight);
-  noCursor();
+    // socket.on('ping', function(data){
+    //     console.log(data);
+    // });
 
-  socket.on('ping', function (data) {
-    console.log(data);
-  });
+    //GET OSC DATA FROM NODEJS
+    socket.on('outputData',
+        function(data){
 
+            //IF ML OUTPUT TYPE IS EXPECTED TO BE CLASSIFICATION
+            if(MLOutputType == "Classification"){
 
+                //Loop the data coming in
+                for(var n = 0; n < data.args.length; n++){
+                    thisOSCData = data.args[n].value;
+                }
 
+            //IF ML OUTPUT TYPE IS EXPECTED TO BE DWT
+            }else{
 
-  socket.on('outputData',
-    function(data){
+                //If OSC gives /one -> Class 1
+                if(data.args[0].value == 3){
+                // if(data.address == "/one"){
+                    dwtreceived = "triangle";
+                }
 
+                //If OSC gives /two -> Class 2
+                if(data.args[0].value == 2){
+                // if(data.address == "/two"){
+                    dwtreceived = "square";
+                }
 
-      for(var n = 0; n < data.args.length; n++){
+                //If OSC gives /three -> Class 3
+                if(data.args[0].value == 1){
+                // if(data.address == "/three"){
+                    dwtreceived = "circle";
+                }
 
-        if(allowFrames == 0){
-            thisOSCData = data.args[n].value;
+            }
+
         }
-        
-      }
+    );
 
-        if(data.args[0].value == 3){
-            dwtreceived = "triangle";
-            console.log("achieved");
-        }
-
-
-        if(data.args[0].value == 2){
-            dwtreceived = "square";
-            console.log("achieved");
-        }
-
-        if(data.args[0].value == 1){
-            dwtreceived = "circle";
-            console.log("achieved");
-        }
-
-        // if(data.address == "/two"){
-        //     dwtreceived = "square";
-        // }
-
-
-        // if(data.address == "/three"){
-        //     dwtreceived = "circle";
-        // }
-
-    }
-  );
-
-
-
+    //Declare the outputs in variables
     osc1 = 1;
     osc2 = 2;
     osc3 = 3;
     osc4 = 4;
     osc5 = 5;
     
-
+    //HTML ELEMENTS FOR NICE FUNTIONALITY
     box1 = document.getElementById("box-1");
     box2 = document.getElementById("box-2");
     box3 = document.getElementById("box-3");
@@ -208,19 +203,20 @@ function setup(){
     fallleft = loadImage('./assets/fallleft.png');
     fallright = loadImage('./assets/fallright.png');
 
-    //Run left 
+    //RUN LEFT
     packageRunLeft = [];
     for(var i = 0; i < 12; i++)
         packageRunLeft.push(loadImage('./assets/run-left/run'+ i +'.png'));
     runIndexLeft = 0;
 
-    //Run right
+    //RUN RIGHT
     packageRunRight = [];
     for(var i = 0; i < 12; i++)
         packageRunRight.push(loadImage('./assets/run-right/run'+ i +'.png'));
     runIndexRight = 0;
 
     //CHESTS
+    keyImg = loadImage("./assets/key.png");
     chestClosed = loadImage("./assets/chestclosed.png");
     platformImg = loadImage("./assets/platform.png");
 
@@ -231,7 +227,7 @@ function setup(){
     sawIndex = 0;
 
     //Calling main function 
-    lives = 30;
+    lives = 5;
     startGame();
 
 }
@@ -488,11 +484,9 @@ function draw(){
 
 
 
-        allowFrames++;
-        if(allowFrames == 1){
-            allowFrames = 0;
+    
             thisOSCData = 0;
-        }
+        
 
 
 
@@ -503,33 +497,29 @@ function draw(){
         /*********************************
                 SCREEN INFORMATION
         *********************************/
-        textSize(20);
+        textSize(14);
         fill(0);
-        stroke(1);
-        text("Treasures: "+score+" / "+chests.length, 12.5,25);
-        text("Lives: ", 12.5,50);
+        noStroke(); 
+        image(keyImg, 10,15)
+        text(score+" / "+chests.length, 36, 25);
+        text("Lives: ", 10, 45);
         
-        //Drawing hearts in the screen
-        for(var l = 0; l < lives; l++){
-            noStroke();     
+        //DRAW THE HEARTS IN SCREEN
+        for(var l = 0; l < lives; l++){    
             fill(255,0,0);
-            ellipse(75 + 18*l,40,8,8);
-            ellipse(83 + 18*l,40,8,8);
-            triangle(71 + 18*l,40,
-                87 + 18*l,40,
-                79 + 18*l,51);  
+            ellipse(60 + 18*l, 36, 8, 8);
+            ellipse(68 + 18*l, 36, 8, 8);
+            triangle(56 + 18*l, 36,
+                72 + 18*l, 36,
+                64 + 18*l, 47);  
         }
 
-
-
-    
-
+    //GAME IS WAITING FOR CHARACTER TO GET THE CHEST WITH DWT
     }else{
         drawModalWindow();
         compareShapes();
     }
     
-
 }
 
 
