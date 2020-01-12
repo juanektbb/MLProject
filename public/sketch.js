@@ -139,14 +139,24 @@ function setup(){
         }
 
 
-        if(data.address == "/two"){
+        if(data.args[0].value == 2){
             dwtreceived = "square";
+            console.log("achieved");
         }
 
-
-        if(data.address == "/three"){
+        if(data.args[0].value == 1){
             dwtreceived = "circle";
+            console.log("achieved");
         }
+
+        // if(data.address == "/two"){
+        //     dwtreceived = "square";
+        // }
+
+
+        // if(data.address == "/three"){
+        //     dwtreceived = "circle";
+        // }
 
     }
   );
@@ -231,7 +241,7 @@ function setup(){
 /****************************
         DRAW FUNCTION
 ****************************/
-function draw() {
+function draw(){
 
     if(modalwindow == false){
   
@@ -342,9 +352,7 @@ function draw() {
         /*************************
                 GAME LOGIC
         *************************/  
-
-
-        //Jumping
+        //CHARACTER JUMPS FROM THE WIIMOTE
         if((thisOSCData == osc2 && character.y == placeOnFloor) ||
             (thisOSCData == osc2 && isOnPlatform == true)){
             
@@ -359,7 +367,7 @@ function draw() {
 
 
 
-            //Jumping
+        //Jumping
         if((thisOSCData == osc1 && character.y == placeOnFloor) || (thisOSCData == osc1 && isOnPlatform == true) ||
             (thisOSCData == osc3 && character.y == placeOnFloor) || (thisOSCData == osc3 && isOnPlatform == true)){
 
@@ -369,11 +377,16 @@ function draw() {
             if(isFalling == false){
 
                 //left jum arrow
-                if(thisOSCData == osc1)
+                if(thisOSCData == osc1){
                     isJumpLeft = true;
+                    lastDirection = "left";
+                }
 
-                if(thisOSCData == osc3)
+                if(thisOSCData == osc3){
                     isJumpRight = true;
+                    lastDirection = "right";
+                }
+
 
 
                 isJumping = true;
@@ -391,6 +404,7 @@ function draw() {
 
 
         //Logic to make the game character move left or the background scroll
+        //CHARACTER MOVES LEFT OR BACKGROUND SCROLL - LOGIC, WIIMOTE MOVE 
         if(isLeft || thisOSCData == osc4  || (isJumping == true && isFalling == false && isJumpLeft)){
 
             if(character.x > width * 0.2){
@@ -412,8 +426,11 @@ function draw() {
         //Gravity
         if(character.y < placeOnFloor && isOnPlatform == false && isJumping == false){
             character.y += 3;
+                        isJumpLeft = false;
+        isJumpRight = false;
         }else{
             isFalling = false;
+
         }
 
         //Jump - Power up
@@ -478,6 +495,8 @@ function draw() {
         }
 
 
+
+
         
 
 
@@ -519,96 +538,78 @@ function draw() {
 /****************************
     KEY CONTROL FUNCTIONS
 ****************************/
+//EVENT FOR PRESING
 function keyPressed(){
-    //Left arrow
-  if(keyCode == 37)
-    isLeft = true;
-  
-    //Right arrow
-  if(keyCode == 39)
-    isRight = true;
 
+    //Left Arrow
+    if(keyCode == 37)
+        isLeft = true;
 
+    //Right Arrow
+    if(keyCode == 39)
+        isRight = true;
 
-
-
-
-
-
-        //Jumping
+    //CHARACTER JUMPS LEFT OR RIGHT USING 'A' or 'D'
     if((keyCode === 65 && character.y == placeOnFloor) || (keyCode === 65 && isOnPlatform == true) ||
-        (keyCode === 68 && character.y == placeOnFloor) || (keyCode === 68 && isOnPlatform == true)){
-
-
-
-        //IsJumping is true and limit jump is 92
+       (keyCode === 68 && character.y == placeOnFloor) || (keyCode === 68 && isOnPlatform == true)){
         if(isFalling == false){
 
-            //left jum arrow
-            if(keyCode == 65)
+            //Jump left
+            if(keyCode == 65){
                 isJumpLeft = true;
+                lastDirection = "left";
+            }
 
-            if(keyCode == 68)
+            //Jump right
+            if(keyCode == 68){
                 isJumpRight = true;
+                lastDirection = "right";
+            }
 
-
+            //IsJumping is true and limit jump is 92
             isJumping = true;
             limitJump = character.y - 92;
+        
         }
-
-
-
     }
 
-
-
-
-
-
-
-  
-    //Jumping
-    if((keyCode === 32 && character.y == placeOnFloor) ||
-        (keyCode === 32 && isOnPlatform == true)){
-        
-        //IsJumping is true and limit jump is 92
+    //CHARACTER JUMPS PRESSING 'SPACE'
+    if((keyCode === 32 && character.y == placeOnFloor) || (keyCode === 32 && isOnPlatform == true)){
         if(isFalling == false){
             isJumping = true;
             limitJump = character.y - 92;
         }
     }
+
 }
 
-
-
-
+//EVENT FOR RELEASING
 function keyReleased(){
-    //Left arrow
+
+    //Left Arrow
     if(keyCode == 37){
         isLeft = false;
         lastDirection = "left";
     }
   
-    //Right arrow
+    //Right Arrow
     if(keyCode == 39){
         isRight = false;
         lastDirection = "right";
     }
 
-
-
-    //Left arrow
+    //Jump Left
     if(keyCode == 65){
         isJumpLeft = false;
         lastDirection = "left";
     }
   
-    //Right arrow
+    //Jump Right
     if(keyCode == 68){
         isJumpRight = false;
         lastDirection = "right";
-    }
-    
+    } 
+
 }
 
 /* ----------------------------------------------------------- */
@@ -841,21 +842,21 @@ function startGame(){
     isJumpRight = false;
 
     //CHESTS DATA
-    chests = [{x: 50, y: 273, size: 50, isFound: false, achieve: false, shape: "triangle"},
-              {x: 920, y: 69, size: 50, isFound: false, achieve: false, shape: "square"},
-              {x: 15, y: 63, size: 50, isFound: false, achieve: false, shape: "circle"},
+    chests = [{x: 50, y: 323, size: 50, isFound: false, achieve: false, shape: "triangle"},
+              {x: 792, y: 375, size: 50, isFound: false, achieve: false, shape: "square"},
+              {x: 15, y: 113, size: 50, isFound: false, achieve: false, shape: "circle"},
     ]; 
 
-    //CANYONS DATA
+    //CANYONS DATA => Width must be multiples of 22px
     canyon = [
         {x: 220, width: 66},
-        {x: 600, width: 320}
+        {x: 595, width: 110}
     ];
 
     //ENEMIES DATA
     enemies = [];
     enemiesPre = [
-        {epx: 10, epy: placeOnFloor + 14, epx1: 10, epx2: 180, epspeed: 2},
+        {epx: 10, epy: placeOnFloor + 14, epx1: 10, epx2: 180, epspeed: 0},
         {epx: 0, epy: placeOnFloor - 211, epx1: 0, epx2: 488, epspeed: 3},
         {epx: 244, epy: placeOnFloor - 211, epx1: 0, epx2: 488, epspeed: 2}
     ];
@@ -869,7 +870,6 @@ function startGame(){
         {ppx: 750, ppy: floorPos_y - 101, ppwidth: 96, ppheight: 15},
         {ppx: 624, ppy: floorPos_y - 152, ppwidth: 48, ppheight: 15},
         {ppx: 776, ppy: floorPos_y - 203, ppwidth: 48, ppheight: 15},
-        {ppx: 904, ppy: floorPos_y - 254, ppwidth: 48, ppheight: 15},
         {ppx: 0, ppy: floorPos_y - 203, ppwidth: 528, ppheight: 15},
         {ppx: 0, ppy: floorPos_y - 260, ppwidth: 48, ppheight: 15},
     ];
