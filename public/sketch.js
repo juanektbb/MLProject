@@ -239,7 +239,7 @@ function setup(){
 ****************************/
 function draw(){
 
-    if(modalwindow == false){
+    if(modalwindow == false ){
   
         //User is on platform
         isOnPlatform = false;
@@ -313,15 +313,16 @@ function draw(){
         **************************/  
         //GAME OVER
         if(isLost == true){
-            fill(176, 0, 0);
+            strokeWeight(4);
             noStroke();
-            rect(200,200,624,176);
-            
+            fill(176, 0, 0);
+            rect(50, 100, gameWidth - 100, gameHeight - 200);
+
             textSize(50);
-            fill(255);
+            fill(255);            
             strokeWeight(3);
             
-            text("GAME OVER - You lost \n (Press space to continue)", gameWidth/2, gameHeight/2);
+            text("GAME OVER - You lost", gameWidth/2, gameHeight/2);
             textAlign(CENTER,CENTER);
             strokeWeight(1);
             return;
@@ -329,28 +330,28 @@ function draw(){
         
         //PLAYER WON
         if(isWon == true){
-            fill(119, 242, 147);
+            strokeWeight(4);
             noStroke();
-            rect(200,200,624,176);
-            
+            fill(119, 242, 147);
+            rect(50, 100, gameWidth - 100, gameHeight - 200);
+
             textSize(50);
-            fill(0);
+            fill(0);;            
             strokeWeight(3);
-            stroke(0);
             
-            text("YOU WON \n (Press space to continue)", gameWidth/2,gameHeight/2);
+            text("YOU WON", gameWidth/2, gameHeight/2);
             textAlign(CENTER,CENTER);
             strokeWeight(1);
-            return; 
+            return;
         }
 
 
         /*************************
                 GAME LOGIC
         *************************/  
-        //CHARACTER JUMPS FROM THE WIIMOTE
+        //CHARACTER JUMPS (!WIIMOTE ONLY) 
         if((thisOSCData == osc2 && character.y == placeOnFloor) ||
-            (thisOSCData == osc2 && isOnPlatform == true)){
+           (thisOSCData == osc2 && isOnPlatform == true)){
             
             //IsJumping is true and limit jump is 92
             if(isFalling == false){
@@ -359,48 +360,33 @@ function draw(){
             }
         }
 
-
-
-
-
-        //Jumping
+        //CHARACTER JUMPS RIGHT OR LEFT (!WIIMOTE ONLY) 
         if((thisOSCData == osc1 && character.y == placeOnFloor) || (thisOSCData == osc1 && isOnPlatform == true) ||
-            (thisOSCData == osc3 && character.y == placeOnFloor) || (thisOSCData == osc3 && isOnPlatform == true)){
-
-
+           (thisOSCData == osc3 && character.y == placeOnFloor) || (thisOSCData == osc3 && isOnPlatform == true)){
 
             //IsJumping is true and limit jump is 92
             if(isFalling == false){
 
-                //left jum arrow
+                //Jump left 
                 if(thisOSCData == osc1){
                     isJumpLeft = true;
                     lastDirection = "left";
                 }
 
+                //Jump right
                 if(thisOSCData == osc3){
                     isJumpRight = true;
                     lastDirection = "right";
                 }
 
-
-
                 isJumping = true;
                 limitJump = character.y - 92;
             }
 
-
-
         }
 
 
-
-
-
-
-
-        //Logic to make the game character move left or the background scroll
-        //CHARACTER MOVES LEFT OR BACKGROUND SCROLL - LOGIC, WIIMOTE MOVE 
+        //CHARACTER MOVES LEFT OR BACKGROUND SCROLL - (!WIIMOTE OPTIONAL)
         if(isLeft || thisOSCData == osc4  || (isJumping == true && isFalling == false && isJumpLeft)){
 
             if(character.x > width * 0.2){
@@ -408,34 +394,37 @@ function draw(){
             }else{
                 scrollPos += 3;
             }
+
         }
 
-        //Logic to make the game character move right or the background scroll
+        //CHARACTER MOVES RIGHT OR BACKGROUND SCROLL - (!WIIMOTE OPTIONAL)
         if(isRight || thisOSCData == osc5 || (isJumping == true && isFalling == false && isJumpRight)){
+
             if(character.x < width * 0.8){
                 character.x = character.x + 3;
             }else{
                 scrollPos -= 3;
             }
+
         }
 
-        //Gravity
+        //GRAVITY
         if(character.y < placeOnFloor && isOnPlatform == false && isJumping == false){
             character.y += 3;
-                        isJumpLeft = false;
-        isJumpRight = false;
+            isJumpLeft = false;
+            isJumpRight = false;
+
         }else{
             isFalling = false;
-
         }
 
-        //Jump - Power up
+        //JUMP -POWER UP
         if(isJumping == true && isFalling == false && character.y > limitJump){
             character.y -= 3;
             isFalling = false;
         }
         
-        //Limit of jumping - Character falls
+        //LIMIT OF JUMPING - CHARACTER FALLS
         if(character.y < limitJump){
             isFalling = true;
             isJumping = false;
@@ -444,16 +433,14 @@ function draw(){
         //Update real position for collision detection
         realPos = character.x - scrollPos;
 
-        
-
-
+        //CLEAR THE BACKGROUND COLOR EVERY FRAME
         box1.style.backgroundColor = "#e6e6e6";
         box2.style.backgroundColor = "#e6e6e6";
         box3.style.backgroundColor = "#e6e6e6";
         box4.style.backgroundColor = "#e6e6e6";
         box5.style.backgroundColor = "#e6e6e6";
 
-
+        //CHANGE COLOR OF HTML ELEMENT IF OSC DETECTED 
         switch(thisOSCData){
             case osc1:
                 box1.style.backgroundColor = "red";
@@ -472,26 +459,15 @@ function draw(){
                 break;
         }
 
-
-
-
-
+        //Change last position of character when moving
         if(thisOSCData == 4){
             lastDirection = "left";
         }else if(thisOSCData == 5){
             lastDirection = "right";
         }
 
-
-
-    
-            thisOSCData = 0;
-        
-
-
-
-
-        
+        //Reset the OSC data
+        thisOSCData = 0;     
 
 
         /*********************************
@@ -736,15 +712,22 @@ function checkChests(t_chest){
         //IF IT IS NOT FOUND, TRIGGER TO GET
         if(t_chest[b].isFound == false){ 
 
-            console.log("isfond is false")
-
             //IF CHARACTER IS IN CORRECT POSITION FOR PICKING UP
             if(realPos + 25 > t_chest[b].x && realPos + 25 < t_chest[b].x + 39 &&
                character.y + 40 > t_chest[b].y && character.y + 40 < t_chest[b].y + 61){
-                t_chest[b].achieve = true;
 
-                actualTresuare = b;
-                modalwindow = true;
+                //GRAB THE OBJECT IF CLASSIFICATION OUTPUT TYPE
+                if(MLOutputType == "Classification"){
+                    chests[b].isFound = true;
+                    score++;
+
+                //WAIT FOR DTW SHAPE INSTEAD
+                }else{
+                    t_chest[b].achieve = true;
+                    actualTresuare = b;
+                    modalwindow = true;
+                }
+
             }
 
         }
@@ -753,11 +736,10 @@ function checkChests(t_chest){
 }
 
 
-
-
-
-
-
+/**********************************************
+    FUNCTIONS TO CHECK DWT COMING FROM USER
+**********************************************/
+//DRAW THE MODAL WINDOW IN THE SCREEN
 function drawModalWindow(){
 
 
@@ -777,17 +759,10 @@ function drawModalWindow(){
     text("Draw a triangle \n", 100, 100);
     // textAlign(CENTER,CENTER);
 
-
-
-
-
 }
 
-
-
-
+//RUN TO COMPARE THE SHAPES GIVEN BY THE USER
 function compareShapes(){
-
     //If the shape given corresponds to given by the user
     if(dwtreceived == chests[actualTresuare].shape){
 
@@ -798,10 +773,6 @@ function compareShapes(){
 
     }
 }
-
-
-
-
 
 /* ----------------------------------------------------------- */
 
@@ -868,7 +839,6 @@ function startGame(){
     /*****************************************
             ADVANCE ELEMENTS APPENDING
     *****************************************/
-
     /******* APPEND ENEMIES *******/
     for(var i = 0; i < enemiesPre.length; i++){
         //PRE BUILD ENEMY OBJECT TO APPEND TO ENEMIES ARRAY
@@ -953,31 +923,4 @@ function playerDied(){
     }else{
         isLost = true;
     }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// function mouseMoved() {
-//   socket.emit('inputData', { x: mouseX, y:mouseY });
-// }
-
-function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
 }
