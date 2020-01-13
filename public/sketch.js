@@ -106,7 +106,7 @@ let counterShape;
 function setup(){
 
     socket = io.connect(window.location.origin);
-    MLOutputType = "Classificationq";
+    MLOutputType = "Classification";
     //Change to 'DTW' for other functionality
 
     // socket.on('ping', function(data){
