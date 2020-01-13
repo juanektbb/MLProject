@@ -35,18 +35,14 @@ var lives;
 //Game objects
 var enemies;
 var enemiesPre;
-
 var platforms;
 var platformsPre;
-
 var chests;
 var chestClosed;
-
 var canyon;
 
 //IMAGES
 let keyImg;
-
 let idleleft;
 let idleright;
 let jumpleft;
@@ -75,25 +71,16 @@ let sawIndex;
 var socket;
 var thisOSCData = 0;
 
-
-
 let osc1;
 let osc2;
 let osc3;
 let osc4;
 let osc5;
 
-
-var oscright = 0;
-var oscleft = 0;
-
-
 //Dynamic Time Warping
 var dwtreceived;
 
-//Second part
 var modalwindow;
-
 var actualTresuare;
 
 //HTML ELEMENTS FOR OSC
@@ -103,8 +90,15 @@ let box3;
 let box4;
 let box5;
 
-
 let MLOutputType;
+
+var totalShapes
+let squareShape;
+let triangleShape;
+let circleShape;
+
+let indexShape;
+let counterShape;
 
 /*********************
     SETUP FUNCTION
@@ -112,7 +106,7 @@ let MLOutputType;
 function setup(){
 
     socket = io.connect(window.location.origin);
-    MLOutputType = "Classification";
+    MLOutputType = "Classificationq";
     //Change to 'DTW' for other functionality
 
     // socket.on('ping', function(data){
@@ -135,20 +129,21 @@ function setup(){
             }else{
 
                 //If OSC gives /one -> Class 1
-                if(data.args[0].value == 3){
-                // if(data.address == "/one"){
-                    dwtreceived = "triangle";
+                //if(data.args[0].value == 3){
+                if(data.address == "/one"){
+                    dwtreceived = "square";
+                    
                 }
 
                 //If OSC gives /two -> Class 2
-                if(data.args[0].value == 2){
-                // if(data.address == "/two"){
-                    dwtreceived = "square";
+                //if(data.args[0].value == 2){
+                if(data.address == "/two"){
+                    dwtreceived = "triangle";
                 }
 
                 //If OSC gives /three -> Class 3
-                if(data.args[0].value == 1){
-                // if(data.address == "/three"){
+                //if(data.args[0].value == 1){
+                if(data.address == "/three"){
                     dwtreceived = "circle";
                 }
 
@@ -226,8 +221,28 @@ function setup(){
         packageSaw.push(loadImage("./assets/saw/saw" + i + ".png"));
     sawIndex = 0;
 
+    //DRAWING SHAPES
+    squareShape = [];
+    for(var i = 0; i < 4; i++){
+        squareShape.push(loadImage("./assets/shapes/square-" + i + ".png"))
+    }
+
+    triangleShape = [];
+    for(var i = 0; i < 4; i++){
+        triangleShape.push(loadImage("./assets/shapes/triangle-" + i + ".png"))
+    }
+
+    circleShape = [];
+    for(var i = 0; i < 4; i++){
+        circleShape.push(loadImage("./assets/shapes/circle-" + i + ".png"))
+    }
+
+    totalShapes = 0;
+    indexShape = 0;
+    counterShape = 0;
+
     //Calling main function 
-    lives = 5;
+    lives = 10;
     startGame();
 
 }
@@ -473,6 +488,7 @@ function draw(){
         /*********************************
                 SCREEN INFORMATION
         *********************************/
+        textAlign(LEFT, BASELINE);
         textSize(14);
         fill(0);
         noStroke(); 
@@ -741,23 +757,47 @@ function checkChests(t_chest){
 **********************************************/
 //DRAW THE MODAL WINDOW IN THE SCREEN
 function drawModalWindow(){
-
-
     strokeWeight(4);
     stroke(0);
-    fill(255);
+    fill(255, 222,111);
     rect(20, 20, gameWidth - 40, gameHeight - 40);
 
-
-    
-    textSize(20);
-
+    textSize(45);
     fill(0);
+    strokeWeight(1);
 
-    strokeWeight(0);
-    
-    text("Draw a triangle \n", 100, 100);
-    // textAlign(CENTER,CENTER);
+    var textToShow = "Draw a " + chests[actualTresuare].shape + " to collect this key";
+    text(textToShow, gameWidth/2, gameHeight/2 - 100);
+
+    textSize(30);
+    strokeWeight(1);
+    text("To collect this key", gameWidth/2, gameHeight/2 - 30);
+    textAlign(CENTER, CENTER);
+
+    if(chests[actualTresuare].shape == "square"){
+        totalShapes = 4;
+        image(squareShape[indexShape], 364, 220);
+
+    }else if(chests[actualTresuare].shape == "triangle"){
+        totalShapes = 3;
+        image(triangleShape[indexShape], 364, 220);
+
+    }else{
+        totalShapes = 3;
+        image(circleShape[indexShape], 364, 220);
+    }
+
+
+    if(counterShape * 5 == 100){
+        indexShape++;
+        counterShape = 0;
+    }else{
+        counterShape++;
+    }
+
+    if(indexShape == 4){
+        indexShape = 0;
+    }
 
 }
 
@@ -770,6 +810,7 @@ function compareShapes(){
         chests[actualTresuare].isFound = true;
         score++;
         modalwindow = false;
+        dwtreceived = "none";
 
     }
 }
@@ -804,7 +845,7 @@ function startGame(){
 
     //CHESTS DATA
     chests = [{x: 50, y: 323, size: 50, isFound: false, achieve: false, shape: "triangle"},
-              {x: 792, y: 375, size: 50, isFound: false, achieve: false, shape: "square"},
+              {x: 392, y: 375, size: 50, isFound: false, achieve: false, shape: "square"},
               {x: 15, y: 113, size: 50, isFound: false, achieve: false, shape: "circle"},
     ]; 
 
@@ -817,7 +858,7 @@ function startGame(){
     //ENEMIES DATA
     enemies = [];
     enemiesPre = [
-        {epx: 10, epy: placeOnFloor + 14, epx1: 10, epx2: 180, epspeed: 0},
+        {epx: 10, epy: placeOnFloor + 14, epx1: 10, epx2: 180, epspeed: 1},
         {epx: 0, epy: placeOnFloor - 211, epx1: 0, epx2: 488, epspeed: 3},
         {epx: 244, epy: placeOnFloor - 211, epx1: 0, epx2: 488, epspeed: 2}
     ];
